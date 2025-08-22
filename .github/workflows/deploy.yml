@@ -21,7 +21,4 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           uploads: |
             ./michael-mkuegeler-blog/out/ => ./
-          ignore: |
-            *.git
-            */**/*git*
-          dry-run: true  
+          dry-run: false  
