@@ -1,10 +1,8 @@
 name: Deploy Static Website
-
 on:
   push:
     branches:
       - main  # Trigger this workflow on pushes to the 'main' branch
-
 jobs:
   deploy:
     runs-on: ubuntu-latest  # Use the latest Ubuntu runner
@@ -20,5 +18,4 @@ jobs:
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           uploads: |
-            ./michael-mkuegeler-blog/out/ => /kunden/homepages/29/d1017817976/htdocs/
-          dry-run: false  
+            ./michael-mkuegeler-blog/out/ => /kunden/homepages/29/d1017817976/htdocs/  
