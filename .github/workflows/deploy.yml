@@ -12,15 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4  # Step 1: Check out your repository code
-
-      - name: Install dependencies (optional)
-        # Use this step if your static site requires a build step (e.g., Node.js packages)
-        # run: npm ci
-
-      - name: Build static site (optional)
-        # Use this step if you need to run a build command (e.g., 'npm run build')
-        # This will create your static files in a directory like 'build' or 'dist'
-        # run: npm run build
       - name: SFTP Deploy
         uses: wlix/sftp-deploy-action@v2
         with:
