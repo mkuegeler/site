@@ -20,7 +20,8 @@ jobs:
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           uploads: |
-            ./michael-mkuegeler-blog/out/* => ${{ secrets.SFTP_TARGET }}
+            ./michael-mkuegeler-blog/out/ => ./
           ignore: |
             *.git
             */**/*git*
+          dry-run: true  
