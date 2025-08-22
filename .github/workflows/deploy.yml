@@ -20,5 +20,5 @@ jobs:
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           uploads: |
-            ./michael-mkuegeler-blog/out/ => ./
+            ./michael-mkuegeler-blog/out/ => /kunden/homepages/29/d1017817976/htdocs/
           dry-run: false  
