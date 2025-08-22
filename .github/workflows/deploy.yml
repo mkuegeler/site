@@ -1,31 +1,28 @@
-name: Deploy static site to IONOS via SFTP
+name: Deploy Static Website
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger this workflow on pushes to the 'main' branch
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Step 1: Check out your repository code
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      - name: Install dependencies (optional)
+        # Use this step if your static site requires a build step (e.g., Node.js packages)
+        # run: npm ci
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build and export static site
-        run: npm run build && npm run export
-
+      - name: Build static site (optional)
+        # Use this step if you need to run a build command (e.g., 'npm run build')
+        # This will create your static files in a directory like 'build' or 'dist'
+        # run: npm run build
       - name: SFTP Deploy
-        uses: py-actions/sftp-deploy@v1.6.1
+        uses: wlix/sftp-deploy-action@v2
         with:
           host: ${{ secrets.SFTP_SERVER }}
           port: ${{ secrets.SFTP_PORT }}
