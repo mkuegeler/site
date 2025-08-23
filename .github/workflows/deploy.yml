@@ -19,4 +19,4 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           uploads: |
             ./michael-mkuegeler-blog/out/ => /kunden/homepages/29/d1017817976/htdocs/base/
-          remote_path_clean: true  
+          delete: true  
