@@ -196,3 +196,59 @@ jobs:
           chmod +x ./sftp_upload.sh
           ./sftp_upload.sh
 ```
+
+## Prompt 3
+
+Write a shell script that deletes the out folder as soon as a new out.zip is available and then unzips the new out.zip.
+
+Script: watch_and_deploy.sh
+
+```bash
+
+#!/bin/bash
+
+ZIP_PATH="./out.zip"
+OUT_DIR="./out"
+
+echo "Waiting for out.zip to appear..."
+while [ ! -s "$ZIP_PATH" ]; do
+    sleep 2
+done
+echo "out.zip detected."
+
+if [ -d "$OUT_DIR" ]; then
+    echo "Removing $OUT_DIR ..."
+    rm -rf "$OUT_DIR"
+fi
+
+echo "Unzipping $ZIP_PATH ..."
+unzip "$ZIP_PATH" -d "$OUT_DIR"
+
+echo "Removing $ZIP_PATH ..."
+rm -f "$ZIP_PATH"
+
+echo "Deployment complete."
+
+```
+
+If you want to run this right after you upload or copy out.zip, you can simply run it once without the loop:
+
+```bash
+#!/bin/bash
+ZIP_PATH="./out.zip"
+OUT_DIR="./out"
+
+if [ ! -f "$ZIP_PATH" ]; then
+    echo "out.zip does not exist!"
+    exit 1
+fi
+
+if [ -d "$OUT_DIR" ]; then
+    rm -rf "$OUT_DIR"
+fi
+
+unzip "$ZIP_PATH" -d "$OUT_DIR"
+
+rm -f "$ZIP_PATH"
+
+```
