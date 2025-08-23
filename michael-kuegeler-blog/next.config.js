@@ -32,7 +32,8 @@ const securityHeaders = [
 const plugins = [withContentlayer, withBundleAnalyzer];
 
 const nextConfig = {
-  output: 'export',                                 // <-- STATIC EXPORT
+  output: 'export', 
+  basePath: '/out',                                // <-- STATIC EXPORT
   reactStrictMode: true,
   trailingSlash: false,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
