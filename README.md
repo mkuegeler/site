@@ -70,8 +70,14 @@ module.exports = nextConfig;
 Step 5: Build and Export
 
 ```bash
+# Remove previous build
+rm -rf .next
+
+# Remove out folder it exists
+rm -rf out
+
 npm run build
-npm run export
+# see out folder for results
 ```
 
 This creates a out folder (`/out`).
@@ -91,3 +97,101 @@ For GitHub Pages: push the contents of `/out` to the gh-pages branch.
 For FTP, simply drag-and-drop the contents of /out (not the folder itself, but its contents).
 
 If your site is in a subdirectory (e.g., domain.com/blog/), set `assetPrefix` in `next.config.js`.
+
+## Prompt 2
+
+Write a bash script that connects to a remote sftp server using username and password and copies a local folder to the remote sftp folder.
+
+Prerequisites:
+
+Install lftp `sudo apt-get install lftp` on Ubuntu/Debian.
+
+Change the script to read the SFTP variables from GitHub actions variables if you you are connected to GitHub.
+
+The script:
+
+```bash
+#!/bin/bash
+
+# Read variables from environment (set by GitHub Actions)
+SFTP_HOST="${SFTP_HOST}"
+SFTP_USER="${SFTP_USER}"
+SFTP_PASS="${SFTP_PASS}"
+LOCAL_DIR="${LOCAL_DIR}"
+REMOTE_DIR="${REMOTE_DIR}"
+
+# Basic check for required variables
+for var in SFTP_HOST SFTP_USER SFTP_PASS LOCAL_DIR REMOTE_DIR; do
+  if [[ -z "${!var}" ]]; then
+    echo "Error: $var is not set."
+    exit 1
+  fi
+done
+
+# Check for lftp
+if ! command -v lftp &> /dev/null; then
+  echo "lftp not found, installing..."
+  sudo apt-get update && sudo apt-get install -y lftp
+fi
+
+# Upload with lftp
+lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
+set ssl:verify-certificate no
+mkdir -p "$REMOTE_DIR"
+mirror -R "$LOCAL_DIR" "$REMOTE_DIR"
+bye
+EOF
+
+```
+
+GitHub Actions file
+
+```yaml
+name: Deploy Static Website
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on pushes to the 'main' branch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Step 1: Check out your repository code
+      - name: SFTP Deploy
+        uses: Dylan700/sftp-upload-action@latest
+        with:
+          server: ${{ secrets.SFTP_SERVER }}
+          port: ${{ secrets.SFTP_PORT }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          uploads: |
+            ./michael-mkuegeler-blog/out/ => /kunden/homepages/29/d1017817976/htdocs/base/
+          delete: true  
+```
+
+new
+
+```yaml
+name: SFTP Upload
+# Is a special event that allows you to manually trigger the workflow, e.g. by clicking the “Run workflow” button on the Actions tab in your GitHub repository.
+on:
+  workflow_dispatch:
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      SFTP_HOST: ${{ secrets.SFTP_SERVER }}
+      SFTP_USER: ${{ secrets.SFTP_USERNAME }}
+      SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
+      LOCAL_DIR: ./michael-kuegeler-blog/out # The directory created by Next.js
+      REMOTE_DIR: ${{ secrets.SFTP_TARGET }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run SFTP upload script
+        run: |
+          chmod +x ./sftp_upload.sh
+          ./sftp_upload.sh
+```
