@@ -1,0 +1,20 @@
+name: Direct SFTP Upload without zip
+# Is a special event that allows you to manually trigger the workflow, e.g. by clicking the “Run workflow” button on the Actions tab in your GitHub repository.
+on:
+  workflow_dispatch:
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      SFTP_HOST: ${{ secrets.SFTP_SERVER }}
+      SFTP_USER: ${{ secrets.SFTP_USERNAME }}
+      SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
+      LOCAL_DIR: ./michael-kuegeler-blog/out # The directory created by Next.js
+      REMOTE_DIR: ${{ secrets.SFTP_TARGET }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run SFTP upload script
+        run: |
+          chmod +x ./sftp_upload_direct.sh
+          ./sftp_upload_direct.sh
