@@ -14,9 +14,9 @@ jobs:
         uses: Dylan700/sftp-upload-action@latest
         with:
           server: ${{ secrets.SFTP_SERVER }}
-          port: ${{ secrets.SFTP_PORT }}
+          port: 21
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           uploads: |
-            ./michael-mkuegeler-blog/out/ => /kunden/homepages/29/d1017817976/htdocs/  
+            ./michael-mkuegeler-blog/out/ => /kunden/homepages/29/d1017817976/htdocs/base/
           remote_path_clean: true  
