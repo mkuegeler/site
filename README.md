@@ -136,6 +136,7 @@ fi
 
 # Upload with lftp
 lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
+set sftp:host-key-check no
 set ssl:verify-certificate no
 mkdir -p "$REMOTE_DIR"
 mirror -R "$LOCAL_DIR" "$REMOTE_DIR"
