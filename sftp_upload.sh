@@ -33,7 +33,6 @@ zip -r "$ZIP_NAME" "$LOCAL_DIR"
 lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
 set sftp:auto-confirm yes
 set ssl:verify-certificate no
-mkdir -p "$REMOTE_DIR"
 put "$ZIP_NAME" -o "$REMOTE_DIR/$ZIP_NAME"
 bye
 EOF
