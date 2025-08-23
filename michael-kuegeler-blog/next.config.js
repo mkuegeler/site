@@ -33,8 +33,8 @@ const plugins = [withContentlayer, withBundleAnalyzer];
 
 const nextConfig = {
   output: 'export', 
-  basePath: '/out', 
-  assetPrefix: '/out',                               // <-- STATIC EXPORT
+  //basePath: '/out', 
+  //assetPrefix: '/out',                               // <-- STATIC EXPORT
   reactStrictMode: true,
   trailingSlash: false,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
