@@ -14,7 +14,7 @@ jobs:
         uses: Dylan700/sftp-upload-action@latest
         with:
           server: ${{ secrets.SFTP_SERVER }}
-          port: 21
+          port: ${{ secrets.SFTP_PORT }}
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           uploads: |
