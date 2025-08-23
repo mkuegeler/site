@@ -21,12 +21,11 @@ if ! command -v lftp &> /dev/null; then
   sudo apt-get update && sudo apt-get install -y lftp
 fi
 
-# Upload each file and directory inside $LOCAL_DIR to $REMOTE_DIR
+# Mirror only the contents of $LOCAL_DIR into $REMOTE_DIR (not the folder itself)
 lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
 set sftp:auto-confirm yes
 set ssl:verify-certificate no
 lcd "$LOCAL_DIR"
-cd "$REMOTE_DIR"
-mput -r *
+mirror -R . "$REMOTE_DIR"
 bye
 EOF
