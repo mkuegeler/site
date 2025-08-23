@@ -1,7 +1,9 @@
 name: Direct SFTP Upload without zip
 # Is a special event that allows you to manually trigger the workflow, e.g. by clicking the “Run workflow” button on the Actions tab in your GitHub repository.
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main  # Trigger this workflow on pushes to the 'main' branch
 jobs:
   upload:
     runs-on: ubuntu-latest
