@@ -78,6 +78,12 @@ rm -rf out
 
 npm run build
 # see out folder for results
+
+# Run this in your Next.js directory to auto-fix lint errors:
+npm run lint:fix
+# or
+npx eslint . --fix
+
 ```
 
 This creates a out folder (`/out`).

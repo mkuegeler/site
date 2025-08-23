@@ -16,7 +16,7 @@ const siteMetadata = {
   x: 'https://twitter.com/mkuegeler',
   // twitter: 'https://twitter.com/Twitter',
   // facebook: 'https://facebook.com',
-  // youtube: 'https://youtube.com', 
+  // youtube: 'https://youtube.com',
   linkedin: 'https://www.linkedin.com/in/michael-k%C3%BCgeler-57bb2112',
   // threads: 'https://www.threads.net',
   instagram: 'https://www.instagram.com/mkuegeler',
