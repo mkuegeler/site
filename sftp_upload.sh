@@ -8,7 +8,7 @@ SFTP_USER="${SFTP_USER}"
 SFTP_PASS="${SFTP_PASS}"
 LOCAL_DIR="${LOCAL_DIR}"
 REMOTE_DIR="${REMOTE_DIR}"
-ZIP_NAME="upload.zip"
+ZIP_NAME="out.zip"
 
 # --- Sanity checks ---
 for var in SFTP_HOST SFTP_USER SFTP_PASS LOCAL_DIR REMOTE_DIR; do
