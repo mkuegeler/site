@@ -1,6 +1,6 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Michael Kügeler',
+  title: 'Analog / Digital',
   author: 'Michael Kügeler',
   headerTitle: 'Analog / Digital',
   description: 'Michael Kügeler',

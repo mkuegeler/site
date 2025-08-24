@@ -258,3 +258,53 @@ unzip "$ZIP_PATH" -d "$OUT_DIR"
 rm -f "$ZIP_PATH"
 
 ```
+
+## Prompt 4
+
+Write a bash script that renames the extensions of all files in a directory to lower case and removes any planks in filenames.
+
+OpenAI GPT-4.1:
+
+Certainly! Here’s a bash script that:
+
+Iterates over all files in the current directory (not including subdirectories).
+Changes the file extension (if present) to lowercase.
+Removes any spaces ("planks") from the filename.
+
+```bash
+#!/bin/bash
+
+for file in *; do
+  # Only process regular files, not directories or symlinks
+  [ -f "$file" ] || continue
+
+  # Remove spaces ("planks") from filename
+  cleaned_name="${file// /}"
+
+  # Extract base name and extension
+  base="${cleaned_name%.*}"
+  ext="${cleaned_name##*.}"
+
+  # Only proceed if there is an extension
+  if [[ "$base" != "$cleaned_name" ]]; then
+    # Lowercase the extension
+    new_ext=$(echo "$ext" | tr 'A-Z' 'a-z')
+    new_name="${base}.${new_ext}"
+  else
+    # No extension, just cleaned name
+    new_name="$cleaned_name"
+  fi
+
+  # If name has changed, rename
+  if [[ "$file" != "$new_name" ]]; then
+    # If destination exists, warn and skip
+    if [[ -e "$new_name" ]]; then
+      echo "Skipping '$file' -> '$new_name' (destination exists)"
+    else
+      mv -- "$file" "$new_name"
+      echo "Renamed '$file' -> '$new_name'"
+    fi
+  fi
+done
+
+```
