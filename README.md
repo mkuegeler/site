@@ -1,6 +1,12 @@
 # kuegeler.com: web site
 This is the source code for the website https://www.kuegeler.com
 
+References:
+
+- https://tailwind-nextjs-starter-blog.vercel.app
+- https://github.com/timlrx/tailwind-nextjs-starter-blog
+
+
 ## Prompt 1
 
 Create a static website with next.js using the template: https://vercel.com/templates/blog/tailwind-css-starter-blog

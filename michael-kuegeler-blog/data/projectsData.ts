@@ -1,4 +1,5 @@
-import { APOLLO_ERWACHT_IMAGE,
+import {
+  APOLLO_ERWACHT_IMAGE,
   APOLLOS_TRAUM_IMAGE,
   DUS_PARIS_IMAGE,
   ERDE_2_IMAGE,
@@ -11,7 +12,8 @@ import { APOLLO_ERWACHT_IMAGE,
   MOUNTAINS_OF_MADNESS_IMAGE,
   OBERFLAECHE_1_IMAGE,
   ZEITREISE_IMAGE,
-  ZIVILISATION_IMAGE } from '@/data/assets'
+  ZIVILISATION_IMAGE,
+} from '@/data/assets'
 
 interface Project {
   title: string
@@ -64,7 +66,7 @@ const projectsData: Project[] = [
     href: '/blog/impuls',
   },
   {
-    title: 'L\'Apparition',
+    title: "L'Apparition",
     description: 'The apparition emerges.',
     imgSrc: L_APPARITION_IMAGE,
     href: '/blog/lapparition',
