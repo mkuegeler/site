@@ -14,9 +14,7 @@ export default function CVLayout({ children, content }: Props) {
           <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
             Curriculum vitae
           </h1>
-          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            Professional Experience
-          </p>
+          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">Michael Kügeler</p>
         </div>
         <div className="prose dark:prose-invert container max-w-none py-12 pt-8 pb-8 xl:col-span-2">
           {children}
