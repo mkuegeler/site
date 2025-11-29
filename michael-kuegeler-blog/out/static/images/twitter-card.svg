@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1200 600" width="1200" height="600" style="background-color:#cccccc">
+<style>
+        circle.node1 {
+            fill: #cfdecdff;
+        
+        }
+        circle.node2 {
+            fill: #3277a5;
+        }
+    
+    </style>
+    <defs>
+        <radialGradient id="gradient-radial_TE91UH" radientUnits="objectBoundingBox" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+           <stop offset="10%" style="stop-color:#99b4c7ff;stop-opacity:1;"/>
+          <stop offset="90%" style="stop-color:#cfdecdff;stop-opacity:1;"/>     
+        </radialGradient>
+      </defs>
+      <g>
+        <rect x="0" y="0" width="1200" height="600" fill="url(#gradient-radial_TE91UH)"></rect>
+    </g>
+    <g> 
+        <circle cx="600" cy="300" r="100" class="node1"></circle>
+        <circle cx="600" cy="300" r="50" class="node2"></circle>
+        
+    </g>
+    <g>
+    <text id="center" x="600" y="500"
+                  style="lengthAdjust=spacingAndGlyphs,alignment-baseline=central;text-anchor=middle;font-family:Verdana;font-size:48;fill:#3277a5;text-anchor:middle;alignment-baseline:central"
+            >
+                Analog / Digital
+            </text>
+    </g>
+     
+</svg>
