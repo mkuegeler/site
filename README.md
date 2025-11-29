@@ -5,6 +5,7 @@ References:
 
 - https://tailwind-nextjs-starter-blog.vercel.app
 - https://github.com/timlrx/tailwind-nextjs-starter-blog
+- https://favicon.io/favicon-converter/
 
 
 ## Prompt 1

@@ -1,5 +1,5 @@
 User-Agent: *
 Allow: /
 
-Host: https://tailwind-nextjs-starter-blog.vercel.app
-Sitemap: https://tailwind-nextjs-starter-blog.vercel.app/sitemap.xml
+Host: https://kuegeler.com
+Sitemap: https://kuegeler.com/sitemap.xml
