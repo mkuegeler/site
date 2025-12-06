@@ -40,9 +40,9 @@ const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  eslint: {
+  /* eslint: {
     dirs: ['app', 'components', 'layouts', 'scripts'],
-  },
+  }, */
   images: {
     remotePatterns: [{ protocol: 'https', hostname: 'picsum.photos' }],
     unoptimized: true, // <-- disables next/image optimization
@@ -55,12 +55,15 @@ const nextConfig = {
       },
     ]
   },
-  webpack: (config, options) => {
+  /* webpack: (config, options) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     })
     return config
+  },*/
+  turbopack: {
+
   },
 }
 
