@@ -3,4 +3,5 @@
 rm -rf out
 # Build the site
 rm -rf .next
+npx contentlayer2 build
 npm run build

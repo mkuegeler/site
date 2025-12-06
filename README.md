@@ -111,6 +111,14 @@ For FTP, simply drag-and-drop the contents of /out (not the folder itself, but i
 
 If your site is in a subdirectory (e.g., domain.com/blog/), set `assetPrefix` in `next.config.js`.
 
+## Issues with contentlayer
+
+Run if content is not updated.
+
+```bash
+npx contentlayer2 build
+``` 
+
 ## Prompt 2
 
 Write a bash script that connects to a remote sftp server using username and password and copies a local folder to the remote sftp folder.
