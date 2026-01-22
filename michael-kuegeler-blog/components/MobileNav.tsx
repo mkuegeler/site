@@ -10,6 +10,16 @@ const MobileNav = () => {
   const [navShow, setNavShow] = useState(false)
   const navRef = useRef(null)
 
+  // Fix: Make sure all hooks are called before any early return
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    return clearAllBodyScrollLocks
+  }, [])
+
+  // Now it's safe to return early after all hooks
+  if (!mounted) return null
+
   const onToggleNav = () => {
     setNavShow((status) => {
       if (status) {
@@ -21,10 +31,6 @@ const MobileNav = () => {
       return !status
     })
   }
-
-  useEffect(() => {
-    return clearAllBodyScrollLocks
-  })
 
   return (
     <>
