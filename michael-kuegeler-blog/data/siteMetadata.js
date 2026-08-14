@@ -54,36 +54,39 @@ const siteMetadata = {
     // Please add your .env file and modify it according to your selection
     provider: 'buttondown',
   },
-  comments: {
-    // If you want to use an analytics provider you have to add it to the
-    // content security policy in the `next.config.js` file.
-    // Select a provider and use the environment variables associated to it
-    // https://vercel.com/docs/environment-variables
-    provider: 'giscus', // supported providers: giscus, utterances, disqus
-    giscusConfig: {
-      // Visit the link below, and follow the steps in the 'configuration' section
-      // https://giscus.app/
-      repo: process.env.NEXT_PUBLIC_GISCUS_REPO,
-      repositoryId: process.env.NEXT_PUBLIC_GISCUS_REPOSITORY_ID,
-      category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY,
-      categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID,
-      mapping: 'pathname', // supported options: pathname, url, title
-      reactions: '1', // Emoji reactions: 1 = enable / 0 = disable
-      // Send discussion metadata periodically to the parent window: 1 = enable / 0 = disable
-      metadata: '0',
-      // theme example: light, dark, dark_dimmed, dark_high_contrast
-      // transparent_dark, preferred_color_scheme, custom
-      theme: 'light',
-      // theme when dark mode
-      darkTheme: 'transparent_dark',
-      // If the theme option above is set to 'custom`
-      // please provide a link below to your custom theme css file.
-      // example: https://giscus.app/themes/custom_example.css
-      themeURL: '',
-      // This corresponds to the `data-lang="en"` in giscus's configurations
-      lang: 'en',
-    },
-  },
+  // Comments are disabled. giscus was configured here, but its repo settings
+  // came from NEXT_PUBLIC_GISCUS_* environment variables that were never set,
+  // so every blog post rendered a "Load Comments" button that could not work.
+  // The privacy policy in data/authors/privacy.mdx states that no comment
+  // function is active.
+  //
+  // The whole key is left out rather than emptied: the post layouts render the
+  // comment container with `siteMetadata.comments && ...`, so any object here —
+  // even one without a provider — leaves an empty padded div on every post.
+  //
+  // Re-enabling means: set the NEXT_PUBLIC_GISCUS_* variables, restore the
+  // block below, re-add giscus.app to script-src and frame-src in
+  // next.config.js, and update the privacy policy — giscus loads a
+  // third-party iframe from giscus.app and sets cookies, so it needs a
+  // consent step and its own section in the policy.
+  //
+  // comments: {
+  //   provider: 'giscus', // supported providers: giscus, utterances, disqus
+  //   giscusConfig: {
+  //     // https://giscus.app/
+  //     repo: process.env.NEXT_PUBLIC_GISCUS_REPO,
+  //     repositoryId: process.env.NEXT_PUBLIC_GISCUS_REPOSITORY_ID,
+  //     category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY,
+  //     categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID,
+  //     mapping: 'pathname', // supported options: pathname, url, title
+  //     reactions: '1', // Emoji reactions: 1 = enable / 0 = disable
+  //     metadata: '0',
+  //     theme: 'light',
+  //     darkTheme: 'transparent_dark',
+  //     themeURL: '',
+  //     lang: 'en',
+  //   },
+  // },
   search: {
     provider: 'kbar', // kbar or algolia
     kbarConfig: {

@@ -94,7 +94,7 @@ Content lives in `data/` and is compiled by Contentlayer2 into `contentlayer/gen
 To edit those pages, edit the MDX in `data/authors/`, not the TSX. Note `app/page.tsx` (the home page) renders `AboutMain`, not the post list in `app/Main.tsx`.
 
 **Other content config in `data/`:**
-- `siteMetadata.js` — title (`Analog / Digital`), author, `siteUrl`, socials, analytics (Umami via `NEXT_UMAMI_ID`), comments (giscus), search (kbar), newsletter (buttondown).
+- `siteMetadata.js` — title (`Analog / Digital`), author, `siteUrl`, socials, search (kbar), newsletter (buttondown). **Analytics and comments are deliberately disabled**, and the privacy policy asserts that no analytics, tracking or comment function exists. Both were configured from environment variables that were never set, which was worse than useless: Umami still loaded `analytics.umami.is/script.js` on every page (visitor IPs to a US provider, nothing collected), and giscus rendered a "Load Comments" button that could not work. The site now loads **no third-party resources at all** — keep it that way unless you also update `data/authors/privacy.mdx`, add a consent mechanism, and re-add the host to the CSP in `next.config.js`. The commented-out blocks in `siteMetadata.js` spell out what re-enabling requires.
 - `headerNavLinks.ts` — the nav: Home, CV, Contact, Privacy.
 - `assets.ts` — exported constants for gallery images and videos, all pointing at `https://www.kuegeler.com/gallery/` and `/video/`. **Large media is hosted externally, not in this repo.** Reference it via these constants.
 - `projectsData.ts` — the `/projects` cards, built from `assets.ts` constants.
