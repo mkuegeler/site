@@ -16,6 +16,7 @@ Source for **https://www.kuegeler.com** — the personal site of Michael Kügele
 ```
 /                             legacy static site + deploy plumbing
 ├── .github/workflows/
+│   ├── ci.yml                pull_request → build check (no deploy)
 │   ├── direct.yml            push to main → SFTP mirror of blog `out/` (active deploy)
 │   └── deploy.yml            manual (workflow_dispatch) zip-based upload
 ├── sftp_upload_direct.sh     lftp mirror, used by direct.yml
@@ -45,12 +46,19 @@ Source for **https://www.kuegeler.com** — the personal site of Michael Kügele
 All commands run from `michael-kuegeler-blog/`.
 
 ```bash
-npm install          # package-lock.json is the source of truth (see note below)
+npm ci               # package-lock.json is the source of truth (see note below)
 npm run dev          # dev server on :3000
 npm run build        # next build (static export) + postbuild RSS
-npm run lint         # next lint --fix over app, components, layouts, scripts
+npm run lint         # eslint over app, components, layouts, scripts
+npm run lint:fix     # same, with --fix
+npm run prettier     # repo-wide format check (respects .prettierignore)
+npm run prettier:fix # repo-wide format write
 ./build.sh           # full clean rebuild — use this before committing
 ```
+
+**ESLint setup.** `eslint.config.mjs` imports `eslint-config-next/core-web-vitals` as a native flat config. Do **not** reintroduce `FlatCompat` here: `eslint-config-next` 16 exports self-referential plugin objects, and the eslintrc validator `JSON.stringify`s configs, so compat loading dies with `TypeError: Converting circular structure to JSON`. For the same reason, additional shared configs (`jsx-a11y/recommended`, `@typescript-eslint` recommended) are spread as **rules only** — flat config refuses to redefine a plugin name that `eslint-config-next` has already registered, and the hoisted `eslint-plugin-jsx-a11y` is a different instance from the one it registers.
+
+Note also that `next lint` no longer exists — Next.js 16 removed the subcommand, so the `lint` script invokes `eslint` directly.
 
 `build.sh` is the one to use before a commit:
 
@@ -96,11 +104,24 @@ To edit those pages, edit the MDX in `data/authors/`, not the TSX. Note `app/pag
 ## Conventions
 
 - **Path aliases** (`tsconfig.json`): `@/components/*`, `@/data/*`, `@/layouts/*`, `@/css/*`, `contentlayer/generated`, `pliny/*`. Use them rather than relative climbs.
-- **Formatting** (`prettier.config.js`): no semicolons, single quotes, width 100, 2-space indent, `es5` trailing commas, `prettier-plugin-tailwindcss` for class sorting. A husky `pre-commit` hook runs `lint-staged` (eslint on JS/TS, prettier on JS/TS/JSON/CSS/MD/MDX).
+- **Formatting** (`prettier.config.js`): no semicolons, single quotes, width 100, 2-space indent, `es5` trailing commas, `prettier-plugin-tailwindcss` for class sorting. Enforced in lint via the `prettier/prettier` ESLint rule. `.prettierignore` excludes everything generated — `out/`, `.next/`, `.contentlayer/`, `next-env.d.ts`, `public/`, `package-lock.json` — which matters because `out/` is committed and would otherwise be rewritten by any repo-wide prettier run.
+- **The husky `pre-commit` hook does not run.** `package.json` declares `prepare: husky` and `.husky/pre-commit` exists, but husky installs nothing: the git root is one level above `michael-kuegeler-blog/`, so `npx husky` reports `.git can't be found` and never sets `core.hooksPath`. The `lint-staged` config is therefore dead configuration today — nothing formats or lints your staged files automatically. Run `npm run lint` yourself, and treat CI as the real gate.
+- The tree is prettier-clean repo-wide and CI enforces it (`npm run prettier`). This covers what ESLint does not — the `data/**/*.mdx` content, `css/tailwind.css`, and the root config files. Use `npm run prettier:fix` before committing content changes. Note prettier normalizes MDX emphasis to `_underscores_`, so don't fight it by hand-writing `*asterisks*`.
 - **Styling:** Tailwind v4 with CSS-first config in `css/tailwind.css` (`@theme` block, oklch color scale, `primary-*` and `gray-*`). No `tailwind.config.js`. Dark mode via a `.dark` class variant driven by `next-themes`.
 - **TypeScript:** `strict: false` but `strictNullChecks: true`. `@typescript-eslint/no-unused-vars` and `explicit-module-boundary-types` are off.
 - **Static export constraints** (`next.config.js` `output: 'export'`): no server runtime. `next/image` optimization is disabled (`unoptimized: true`) — use the `components/Image.tsx` wrapper. The `app/api/newsletter/route.ts` handler is `dynamic = 'force-static'`. The `headers()` CSP block in `next.config.js` has **no effect on the exported site** (headers are a server feature); it is kept from the template. Real headers would have to be set on the web host.
 - **Language:** content is mixed German and English (often both in one document, as in `data/authors/default.mdx`); UI chrome is English. Match the surrounding document.
+
+## CI
+
+**`.github/workflows/ci.yml`** runs on pull requests targeting `main`, as two parallel jobs against Node 22 in `michael-kuegeler-blog/`:
+
+- **`build`** — `npm ci`, `npx contentlayer2 build`, `npm run build`.
+- **`lint`** — `npm ci`, `npm run lint` (ESLint, no `--fix`), then `npm run prettier` (repo-wide format check).
+
+Neither job deploys anything or commits anything.
+
+It deliberately does **not** verify that the committed `out/` matches the sources, even though that is the invariant most likely to be violated. A rebuild with zero source changes rewrites ~370 files under `out/`, because Next embeds a per-build ID in the `_next/static/<buildId>/` paths and asset hashes. A `git diff --exit-code -- out/` check would therefore fail on every PR. Keeping `out/` current remains a manual discipline: run `./build.sh` and commit the result.
 
 ## Deployment
 

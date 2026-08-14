@@ -62,9 +62,7 @@ const nextConfig = {
     })
     return config
   },*/
-  turbopack: {
-
-  },
+  turbopack: {},
 }
 
 module.exports = plugins.reduce((acc, plugin) => plugin(acc), nextConfig)

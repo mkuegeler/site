@@ -12,6 +12,9 @@ const MobileNav = () => {
 
   // Fix: Make sure all hooks are called before any early return
   const [mounted, setMounted] = useState(false)
+  // Deliberate mount guard: the component must render nothing during SSR so the
+  // static export's HTML matches the first client render.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), [])
   useEffect(() => {
     return clearAllBodyScrollLocks

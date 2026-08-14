@@ -1,0 +1,68 @@
+name: CI
+
+# Build check for pull requests. The deploy workflows (direct.yml, deploy.yml)
+# only upload the committed `michael-kuegeler-blog/out/` over SFTP and never
+# build, so this is the only place a broken build gets caught before merge.
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build static site
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./michael-kuegeler-blog
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: michael-kuegeler-blog/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Run explicitly: the Contentlayer cache goes stale often, and `next build`
+      # alone can pick up outdated MDX. Mirrors build.sh.
+      - name: Build Contentlayer content
+        run: npx contentlayer2 build
+
+      - name: Build Next.js static export
+        run: npm run build
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./michael-kuegeler-blog
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: michael-kuegeler-blog/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Deliberately not `--fix`: CI must report problems, not silently rewrite
+      # files it then throws away. Use `npm run lint:fix` locally for that.
+      - name: Run ESLint
+        run: npm run lint
+
+      # Covers what ESLint does not: the MDX content under data/, plus the CSS
+      # and root config files. Generated output is excluded by .prettierignore.
+      - name: Check formatting
+        run: npm run prettier

@@ -159,7 +159,6 @@ export default makeSource({
       remarkCodeTitles,
       remarkMath,
       remarkImgToJsx,
-      
     ],
     rehypePlugins: [
       rehypeSlug,
@@ -176,7 +175,7 @@ export default makeSource({
       rehypeKatex,
       rehypeKatexNoTranslate,
       [rehypeCitation, { path: path.join(root, 'data') }],
-      
+
       rehypePresetMinify,
     ],
   },
