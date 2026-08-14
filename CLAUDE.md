@@ -7,7 +7,7 @@ Guidance for AI assistants working in this repository.
 Source for **https://www.kuegeler.com** — the personal site of Michael Kügeler (artist / technologist). It holds two independent sites:
 
 1. **`michael-kuegeler-blog/`** — the current site. A Next.js 16 + React 19 static-export blog based on [tailwind-nextjs-starter-blog](https://github.com/timlrx/tailwind-nextjs-starter-blog) (v2.4.0), with Contentlayer2 for MDX content. **This is where nearly all work happens.**
-2. **Root-level static HTML** (`index.html`, `cv.html`, `datenschutz.html`, `style.css`, `werk/*.html`, `vimeo-*.html`) — the older hand-written site. Plain HTML/CSS, German-language, no build step. Kept for reference/archive; **not deployed by CI** (see Deployment). Its `<img>`/`<video>` paths (`../images/…`, `../../video/…`) point outside the repo at assets living on the web host.
+2. **Root-level static HTML** (`index.html`, `cv.html`, `style.css`, `werk/*.html`, `vimeo-*.html`) — the older hand-written site. Plain HTML/CSS, German-language, no build step. Kept for reference/archive; **not deployed by CI** (see Deployment). Its `<img>`/`<video>` paths (`../images/…`, `../../video/…`) point outside the repo at assets living on the web host. It no longer carries its own privacy policy: `datenschutz.html` was deleted and its footer links now point at `/privacy`, the policy in `data/authors/privacy.mdx`. Note `vimeo-090124kgZnghFl-Ym.html` embeds 14 `player.vimeo.com` iframes — the only third-party content anywhere in this repo, and something `/privacy` does not cover, so do not restore that page to the live site without revisiting the policy.
 
 `README.md` is a scrapbook of the prompts and generated scripts used to bootstrap the site — treat it as history, not as current instructions.
 
@@ -22,7 +22,7 @@ Source for **https://www.kuegeler.com** — the personal site of Michael Kügele
 │                             both share concurrency group `sftp-deploy`
 ├── sftp_upload_direct.sh     lftp mirror, used by direct.yml
 ├── sftp_upload.sh            lftp zip upload, used by deploy.yml
-├── index.html, cv.html, datenschutz.html, style.css, werk/   legacy site
+├── index.html, cv.html, style.css, werk/   legacy site
 └── michael-kuegeler-blog/    the Next.js site
     ├── app/                  App Router pages
     ├── components/           shared React components
