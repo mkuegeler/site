@@ -1,0 +1,44 @@
+name: CI
+
+# Build check for pull requests. The deploy workflows (direct.yml, deploy.yml)
+# only upload the committed `michael-kuegeler-blog/out/` over SFTP and never
+# build, so this is the only place a broken build gets caught before merge.
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build static site
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./michael-kuegeler-blog
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: michael-kuegeler-blog/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Run explicitly: the Contentlayer cache goes stale often, and `next build`
+      # alone can pick up outdated MDX. Mirrors build.sh.
+      - name: Build Contentlayer content
+        run: npx contentlayer2 build
+
+      - name: Build Next.js static export
+        run: npm run build
+
+      # NOTE: linting is deliberately not run here. The `lint` script calls
+      # `next lint`, which was removed in Next.js 16, and invoking eslint
+      # directly fails on the FlatCompat `next` config with a "Converting
+      # circular structure to JSON" error. Add a lint job once eslint.config.mjs
+      # is repaired.
