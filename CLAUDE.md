@@ -19,6 +19,7 @@ Source for **https://www.kuegeler.com** — the personal site of Michael Kügele
 │   ├── ci.yml                pull_request → build check (no deploy)
 │   ├── direct.yml            push to main → SFTP mirror of blog `out/` (active deploy)
 │   └── deploy.yml            manual (workflow_dispatch) zip-based upload
+│                             both share concurrency group `sftp-deploy`
 ├── sftp_upload_direct.sh     lftp mirror, used by direct.yml
 ├── sftp_upload.sh            lftp zip upload, used by deploy.yml
 ├── index.html, cv.html, datenschutz.html, style.css, werk/   legacy site
@@ -129,6 +130,8 @@ It deliberately does **not** verify that the committed `out/` matches the source
 ## Deployment
 
 - **`.github/workflows/direct.yml`** — the live path. Triggers on push to `main`. Checks out the repo and runs `sftp_upload_direct.sh`, which `lftp mirror -R`s the contents of `./michael-kuegeler-blog/out` into the host directory. No build step in CI.
+- **`mirror -R` runs without `--delete`.** Files are uploaded and overwritten but never removed, so anything deleted from `out/` lingers on the host indefinitely — including the `_next/static/<buildId>/` directories of every previous build. Harmless in itself (stale assets are simply unreferenced), but it has a sharp edge: since the HTML is what points at a build ID, whichever deploy finishes **last** decides which build the site actually serves.
+- **Both deploy workflows share `concurrency: group: sftp-deploy`** with `cancel-in-progress: false`, which exists because of exactly that edge. Two merges in quick succession used to race, and a slower older run could finish after a newer one and silently revert the site to the previous build. The group serializes them in start order; `cancel-in-progress` stays false so an upload in flight is never killed mid-mirror, which would leave the host half-updated. Do not remove this, and keep the group name identical in both files — a manual `deploy.yml` run and a push-triggered `direct.yml` run write to the same target.
 - **`.github/workflows/deploy.yml`** — manual `workflow_dispatch` only. Zips `out/` and `put`s it via `sftp_upload.sh`; remote unzip is commented out, so this is effectively a fallback/upload-only path.
 - Secrets used by both: `SFTP_SERVER`, `SFTP_USERNAME`, `SFTP_PASSWORD`, `SFTP_TARGET`. Never echo or commit these.
 - `michael-kuegeler-blog/.github/workflows/pages.yml` is leftover from the upstream template. It sits in a subdirectory, so GitHub Actions does not run it — ignore it.

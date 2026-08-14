@@ -2,6 +2,13 @@ name: SFTP Upload
 # Is a special event that allows you to manually trigger the workflow, e.g. by clicking the “Run workflow” button on the Actions tab in your GitHub repository.
 on:
   workflow_dispatch:
+
+# Shares the group with direct.yml so a manual upload cannot run at the same
+# time as a push-triggered deploy — both write to the same SFTP target.
+concurrency:
+  group: sftp-deploy
+  cancel-in-progress: false
+
 jobs:
   upload:
     runs-on: ubuntu-latest

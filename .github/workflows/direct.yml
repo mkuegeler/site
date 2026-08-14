@@ -4,6 +4,20 @@ on:
   push:
     branches:
       - main  # Trigger this workflow on pushes to the 'main' branch
+
+# Serialize every deploy to the live host. Two merges in quick succession
+# otherwise race: sftp_upload_direct.sh runs `mirror -R` without --delete, so
+# whichever run finishes last decides which build the deployed HTML points at,
+# and a slower older run can silently revert the site while leaving both
+# _next/static/<buildId>/ trees in place. The group is shared with deploy.yml,
+# which writes to the same SFTP target.
+#
+# cancel-in-progress is false so an upload in flight is never killed part-way,
+# which would leave the host with a half-mirrored tree.
+concurrency:
+  group: sftp-deploy
+  cancel-in-progress: false
+
 jobs:
   upload:
     runs-on: ubuntu-latest
