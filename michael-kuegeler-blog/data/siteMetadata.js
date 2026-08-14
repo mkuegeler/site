@@ -25,17 +25,17 @@ const siteMetadata = {
   locale: 'en-US',
   // set to true if you want a navbar fixed to the top
   stickyNav: false,
+  // No analytics provider is enabled, and the privacy policy in
+  // data/authors/privacy.mdx states that no analytics or tracking is used.
+  //
+  // umamiAnalytics used to be configured here. Because umamiWebsiteId came from
+  // NEXT_UMAMI_ID, which was never set, every page still loaded
+  // https://analytics.umami.is/script.js — sending each visitor's IP address to
+  // a US provider while collecting nothing usable, with no consent mechanism in
+  // place. Re-enabling any provider means updating the privacy policy, adding a
+  // consent banner, and re-adding the host to the CSP in next.config.js.
   analytics: {
-    // If you want to use an analytics provider you have to add it to the
-    // content security policy in the `next.config.js` file.
     // supports Plausible, Simple Analytics, Umami, Posthog or Google Analytics.
-    umamiAnalytics: {
-      // We use an env variable for this site to avoid other users cloning our analytics ID
-      umamiWebsiteId: process.env.NEXT_UMAMI_ID, // e.g. 123e4567-e89b-12d3-a456-426614174000
-      // You may also need to overwrite the script if you're storing data in the US - ex:
-      // src: 'https://us.umami.is/script.js'
-      // Remember to add 'us.umami.is' in `next.config.js` as a permitted domain for the CSP
-    },
     // plausibleAnalytics: {
     //   plausibleDataDomain: '', // e.g. tailwind-nextjs-starter-blog.vercel.app
     // If you are hosting your own Plausible.
