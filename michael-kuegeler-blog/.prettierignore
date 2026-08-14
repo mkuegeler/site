@@ -1,0 +1,17 @@
+# Next.js build output. `out/` is committed (it is what the SFTP deploy
+# uploads), so without this entry a repo-wide prettier run would rewrite
+# hundreds of generated HTML and minified JS files.
+.next/
+out/
+next-env.d.ts
+
+# Contentlayer's generated document types and cache
+.contentlayer/
+
+# Dependencies and package-manager state
+node_modules/
+.yarn/
+package-lock.json
+
+# Static assets served verbatim, plus the generated search index and RSS feed
+public/
