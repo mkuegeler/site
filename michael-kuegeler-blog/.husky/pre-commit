@@ -1,1 +1,7 @@
+# The git root is one level above this project, so git runs hooks with the
+# repository root as the working directory and husky puts a non-existent
+# ./node_modules/.bin on PATH. Move into the project first so lint-staged finds
+# both its config and its binaries.
+cd "$(dirname "$0")/.." || exit 1
+
 npx --no-install lint-staged
