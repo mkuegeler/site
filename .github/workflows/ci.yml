@@ -37,8 +37,32 @@ jobs:
       - name: Build Next.js static export
         run: npm run build
 
-      # NOTE: linting is deliberately not run here. The `lint` script calls
-      # `next lint`, which was removed in Next.js 16, and invoking eslint
-      # directly fails on the FlatCompat `next` config with a "Converting
-      # circular structure to JSON" error. Add a lint job once eslint.config.mjs
-      # is repaired.
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./michael-kuegeler-blog
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: michael-kuegeler-blog/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Deliberately not `--fix`: CI must report problems, not silently rewrite
+      # files it then throws away. Use `npm run lint:fix` locally for that.
+      #
+      # No separate `prettier --check` step: formatting is already enforced on
+      # these directories by the `prettier/prettier` ESLint rule. A repo-wide
+      # prettier run would fail on the committed out/ build output, which has no
+      # .prettierignore covering it.
+      - name: Run ESLint
+        run: npm run lint

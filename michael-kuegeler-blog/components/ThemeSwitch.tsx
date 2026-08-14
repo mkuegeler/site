@@ -58,7 +58,10 @@ const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme, resolvedTheme } = useTheme()
 
-  // When mounted on client, now we can show the UI
+  // When mounted on client, now we can show the UI. Deliberate mount guard: the
+  // resolved theme is unknown during SSR, so the icon stays blank until
+  // hydration to keep the static export's HTML stable.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), [])
 
   return (

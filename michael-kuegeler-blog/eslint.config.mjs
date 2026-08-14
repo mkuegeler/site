@@ -1,52 +1,59 @@
-import typescriptEslint from '@typescript-eslint/eslint-plugin'
-import globals from 'globals'
-import tsParser from '@typescript-eslint/parser'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
-import { FlatCompat } from '@eslint/eslintrc'
+import globals from 'globals'
+import next from 'eslint-config-next/core-web-vitals'
+import prettierRecommended from 'eslint-plugin-prettier/recommended'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
+import tsPlugin from '@typescript-eslint/eslint-plugin'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
+// eslint-config-next 16 ships a native flat config. Loading it through
+// FlatCompat (as this file used to) crashes with "Converting circular structure
+// to JSON", because the eslintrc validator JSON.stringifies configs and the
+// plugin objects are self-referential. Import it directly instead.
+//
+// `eslint-config-next/core-web-vitals` is a superset of `eslint-config-next`:
+// it contributes the react, react-hooks, import, jsx-a11y, @next/next and
+// @typescript-eslint plugins, both parsers, and ignores for .next/, out/ and
+// build/.
+//
+// The shared configs below are therefore spread as *rules only*. Flat config
+// rejects a second definition of an already-registered plugin name, and the
+// hoisted eslint-plugin-jsx-a11y is a different instance from the one
+// eslint-config-next registers, so including their `plugins` keys would fail.
+const TS_FILES = ['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts']
+
+// flat/recommended is [base (plugin registration), eslint-recommended, recommended].
+// The first entry is dropped for the reason above; `eslint-recommended` is the
+// piece that switches off base rules TypeScript already enforces, such as
+// no-undef (which misreads type-only references like `React.ReactNode`) and
+// no-unused-vars (deliberately disabled for this repo further down).
+const [, tsEslintRecommended, tsRecommended] = tsPlugin.configs['flat/recommended']
 
 export default [
   {
-    ignores: [],
+    ignores: ['.contentlayer/**', 'public/**', '.yarn/**'],
   },
   js.configs.recommended,
-  ...compat.extends(
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:prettier/recommended',
-    'next',
-    'next/core-web-vitals'
-  ),
+  ...next,
   {
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
+    files: TS_FILES,
+    rules: {
+      ...tsEslintRecommended.rules,
+      ...tsRecommended.rules,
     },
-
+  },
+  {
+    rules: jsxA11y.flatConfigs.recommended.rules,
+  },
+  // Must follow the rule sets above so eslint-config-prettier can switch off the
+  // formatting rules it conflicts with.
+  prettierRecommended,
+  {
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.amd,
         ...globals.node,
       },
-
-      parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'commonjs',
-
-      parserOptions: {
-        project: true,
-        tsconfigRootDir: __dirname,
-      },
     },
-
     rules: {
       'prettier/prettier': 'error',
       'react/react-in-jsx-scope': 'off',
