@@ -51,6 +51,8 @@ npm run dev          # dev server on :3000
 npm run build        # next build (static export) + postbuild RSS
 npm run lint         # eslint over app, components, layouts, scripts
 npm run lint:fix     # same, with --fix
+npm run prettier     # repo-wide format check (respects .prettierignore)
+npm run prettier:fix # repo-wide format write
 ./build.sh           # full clean rebuild — use this before committing
 ```
 
@@ -104,7 +106,7 @@ To edit those pages, edit the MDX in `data/authors/`, not the TSX. Note `app/pag
 - **Path aliases** (`tsconfig.json`): `@/components/*`, `@/data/*`, `@/layouts/*`, `@/css/*`, `contentlayer/generated`, `pliny/*`. Use them rather than relative climbs.
 - **Formatting** (`prettier.config.js`): no semicolons, single quotes, width 100, 2-space indent, `es5` trailing commas, `prettier-plugin-tailwindcss` for class sorting. Enforced in lint via the `prettier/prettier` ESLint rule. `.prettierignore` excludes everything generated — `out/`, `.next/`, `.contentlayer/`, `next-env.d.ts`, `public/`, `package-lock.json` — which matters because `out/` is committed and would otherwise be rewritten by any repo-wide prettier run.
 - **The husky `pre-commit` hook does not run.** `package.json` declares `prepare: husky` and `.husky/pre-commit` exists, but husky installs nothing: the git root is one level above `michael-kuegeler-blog/`, so `npx husky` reports `.git can't be found` and never sets `core.hooksPath`. The `lint-staged` config is therefore dead configuration today — nothing formats or lints your staged files automatically. Run `npm run lint` yourself, and treat CI as the real gate.
-- After `.prettierignore`, a repo-wide `npx prettier --check .` still reports 22 unformatted **source** files (the `data/**/*.mdx` content, `contentlayer.config.ts`, `next.config.js`, `tsconfig.json`, `css/tailwind.css`). The differences are cosmetic — `*emphasis*` → `_emphasis_`, missing trailing newlines — and none of them change rendered output. They are left alone deliberately; CI does not run a repo-wide prettier check, only the `prettier/prettier` rule over `app`, `components`, `layouts`, `scripts`.
+- The tree is prettier-clean repo-wide and CI enforces it (`npm run prettier`). This covers what ESLint does not — the `data/**/*.mdx` content, `css/tailwind.css`, and the root config files. Use `npm run prettier:fix` before committing content changes. Note prettier normalizes MDX emphasis to `_underscores_`, so don't fight it by hand-writing `*asterisks*`.
 - **Styling:** Tailwind v4 with CSS-first config in `css/tailwind.css` (`@theme` block, oklch color scale, `primary-*` and `gray-*`). No `tailwind.config.js`. Dark mode via a `.dark` class variant driven by `next-themes`.
 - **TypeScript:** `strict: false` but `strictNullChecks: true`. `@typescript-eslint/no-unused-vars` and `explicit-module-boundary-types` are off.
 - **Static export constraints** (`next.config.js` `output: 'export'`): no server runtime. `next/image` optimization is disabled (`unoptimized: true`) — use the `components/Image.tsx` wrapper. The `app/api/newsletter/route.ts` handler is `dynamic = 'force-static'`. The `headers()` CSP block in `next.config.js` has **no effect on the exported site** (headers are a server feature); it is kept from the template. Real headers would have to be set on the web host.
@@ -115,7 +117,7 @@ To edit those pages, edit the MDX in `data/authors/`, not the TSX. Note `app/pag
 **`.github/workflows/ci.yml`** runs on pull requests targeting `main`, as two parallel jobs against Node 22 in `michael-kuegeler-blog/`:
 
 - **`build`** — `npm ci`, `npx contentlayer2 build`, `npm run build`.
-- **`lint`** — `npm ci`, `npm run lint` (ESLint, no `--fix`).
+- **`lint`** — `npm ci`, `npm run lint` (ESLint, no `--fix`), then `npm run prettier` (repo-wide format check).
 
 Neither job deploys anything or commits anything.
 

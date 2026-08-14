@@ -10,6 +10,8 @@
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "eslint app components layouts scripts",
     "lint:fix": "eslint --fix app components layouts scripts",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "prepare": "husky"
   },
   "dependencies": {
